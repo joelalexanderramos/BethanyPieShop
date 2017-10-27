@@ -22,7 +22,8 @@ namespace BethanyPieShop
         {
             _configurationRoot = new ConfigurationBuilder()
                 .SetBasePath(hostingEnvironment.ContentRootPath)
-                .AddJsonFile("appsettings.json")
+                //.AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{hostingEnvironment.EnvironmentName}.json", true)
                 .Build();
         }
 
@@ -47,10 +48,17 @@ namespace BethanyPieShop
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-        {
+        {                        
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseStatusCodePages();
+            }
+            else {
+                app.UseExceptionHandler("/AppException");
+            }
 
-            app.UseDeveloperExceptionPage();
-            app.UseStatusCodePages();
+
             app.UseStaticFiles();
             app.UseSession();
             app.UseIdentity();
